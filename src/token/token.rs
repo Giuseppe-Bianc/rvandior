@@ -8,12 +8,20 @@ pub struct Token {
     pub value: String,
     pub source_location: CodeSourceLocation,
 }
-
+#[allow(dead_code)]
 impl Token {
     pub fn new(token_type: TokenType, value: String, source_location: CodeSourceLocation) -> Self {
         Self {
             token_type,
             value,
+            source_location,
+        }
+    }
+
+    pub fn new_with_empty_value(token_type: TokenType, source_location: CodeSourceLocation) -> Self {
+        Self {
+            token_type,
+            value: "".to_string(),
             source_location,
         }
     }
