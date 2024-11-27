@@ -1,3 +1,5 @@
+use std::fmt;
+
 use logos::Logos;
 
 #[derive(Logos, Debug, PartialEq, Clone)]
@@ -307,8 +309,10 @@ impl TokenType {
             RawToken::OpenCurParentesis => (TokenType::OpenCurParenthesis, ""),
             RawToken::CloseCurParentesis => (TokenType::CloseCurParenthesis, ""),
             RawToken::BOOLEAN => (TokenType::Boolean, ""),
-            RawToken::STRING => (TokenType::String, ""),
-            RawToken::CHAR => (TokenType::Char, ""),
+            RawToken::STRING => (TokenType::String, 
+                raw_val.trim_start_matches('"').trim_end_matches('"')),
+            RawToken::CHAR => (TokenType::Char, 
+                raw_val.trim_start_matches('\'').trim_end_matches('\'')),
             RawToken::Dot => (TokenType::Dot, ""),
             RawToken::TYPEI8 => (TokenType::TypeI8, ""),
             RawToken::TYPEI16 => (TokenType::TypeI16, ""),
@@ -326,6 +330,93 @@ impl TokenType {
             RawToken::TYPESTRING => (TokenType::TypeString, ""),
             RawToken::TYPEBOOL => (TokenType::TypeBool, ""),
             _ => (TokenType::Unknown, ""),
+        }
+    }
+
+    pub fn compact_to_string(&self) -> &'static str {
+        match self {
+            TokenType::Integer => "INT",
+            TokenType::Double => "DBL",
+            TokenType::Boolean => "BOOL",
+            TokenType::Plus => "PLUS_OP",
+            TokenType::Minus => "MINUS_OP",
+            TokenType::Equal => "EQUAL_OP",
+            TokenType::Dot => "DOT_OP",
+            TokenType::Star => "STAR_OP",
+            TokenType::Divide => "DIVIDE_OP",
+            TokenType::Xor => "XOR_OP",
+            TokenType::Percent => "PERCENT_OP",
+            TokenType::Or => "OR_OP",
+            TokenType::And => "AND_OP",
+            TokenType::Less => "LESS_OP",
+            TokenType::Greater => "GREATER_OP",
+            TokenType::PlusPlus => "PLUSPLUS_OP",
+            TokenType::MinusMinus => "MINUSMINUS_OP",
+            TokenType::PlusEqual => "PLUSEQUAL_OP",
+            TokenType::MinusEqual => "MINUSEQUAL_OP",
+            TokenType::NotEqual => "NOTEQUAL_OP",
+            TokenType::StarEqual => "STAREQUAL_OP",
+            TokenType::DivideEqual => "DIVIDEEQUAL_OP",
+            TokenType::XorEqual => "XOREQUAL_OP",
+            TokenType::PercentEqual => "PERCENTEQUAL_OP",
+            TokenType::OrOr => "OROR_OP",
+            TokenType::AndAnd => "ANDAND_OP",
+            TokenType::EqualEqual => "EQUALEQUAL_OP",
+            TokenType::LessEqual => "LESSEQUAL_OP",
+            TokenType::GreaterEqual => "GREATEREQUAL_OP",
+            TokenType::Identifier => "IDENT",
+            TokenType::Char => "CH",
+            TokenType::String => "STR",
+            TokenType::Eoft => "EOF",
+            TokenType::KMain => "K_MAIN",
+            TokenType::KVar => "K_VAR",
+            TokenType::KIf => "K_IF",
+            TokenType::KWhile => "K_WHILE",
+            TokenType::KElse => "K_ELSE",
+            TokenType::KFor => "K_FOR",
+            TokenType::KBreak => "BREAK",
+            TokenType::KFun => "K_FUN",
+            TokenType::KReturn => "K_RETURN",
+            TokenType::KNullptr => "K_NULLPTR",
+            TokenType::OpenParenthesis => "OPEN_PAR",
+            TokenType::OpenSqParenthesis => "OPEN_SQ_PAR",
+            TokenType::OpenCurParenthesis => "OPEN_CUR_PAR",
+            TokenType::CloseParenthesis => "CLOSE_PAR",
+            TokenType::CloseSqParenthesis => "CLOSE_SQ_PAR",
+            TokenType::CloseCurParenthesis => "CLOSE_CUR_PAR",
+            TokenType::Not => "NOT_OP",
+            TokenType::Comma => "COMMA",
+            TokenType::Colon => "COLON",
+            TokenType::TypeI8 => "I8",
+            TokenType::TypeI16 => "I16",
+            TokenType::TypeI32 => "I32",
+            TokenType::TypeI64 => "I64",
+            TokenType::TypeU8 => "U8",
+            TokenType::TypeU16 => "U16",
+            TokenType::TypeU32 => "U32",
+            TokenType::TypeU64 => "U64",
+            TokenType::TypeF32 => "F32",
+            TokenType::TypeF64 => "F64",
+            TokenType::TypeC32 => "C32",
+            TokenType::TypeC64 => "C64",
+            TokenType::TypeChar => "CHAR",
+            TokenType::TypeString => "STRING",
+            TokenType::TypeBool => "BOOL",
+            TokenType::Comment => "COMMENT",
+            // Add more cases as needed
+            TokenType::Unknown => "UNKNOWN",
+        }
+    }
+}
+
+impl fmt::Display for TokenType {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        if f.alternate() {
+            // Usa il formato compatto con "{:#}".
+            write!(f, "{}", self.compact_to_string())
+        } else {
+            // Usa il formato standard.
+            write!(f, "{:?}", self)
         }
     }
 }

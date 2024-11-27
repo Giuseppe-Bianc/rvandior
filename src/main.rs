@@ -1,29 +1,33 @@
+use std::path::Path;
+
 use lexer::Tokenizer;
 
 mod lexer;
 mod token;
 
-fn main() {
-    let token = token::Token::new(
-        token::TokenType::KMain,
-        "main".to_string(),
-        token::CodeSourceLocation::new("hine.vn".to_string(), 3, 3),
-    );
-    println!("{}", token);
-    if token.token_type.is_keyword() {
-        println!("Token is a keyword");
-    } else {
-        println!("Token is not a keyword");
-    }
-    println!("Token value size: {}", token.value_size());
-    let _unkowm_code_source_location = token::CodeSourceLocation::unknown();
-    let mut lexer = Tokenizer::new("hine.vn", "main");
-    let tokens = lexer.tokenize();
-    if tokens.is_empty() {
-        println!("No token found");
-    } else {
-        for token in tokens {
-            println!("{}", token);
+fn main() -> Result<(), Box<dyn std::error::Error>> {
+    let file_path = Path::new("C:/dev/visualStudio/transpiler/Vandior/input.vn");
+    if let Some(path_str) = file_path.to_str() {
+        let contents = match std::fs::read_to_string(file_path) {
+            Ok(it) => it,
+            Err(err) => return Err(Box::new(err)),
+        };
+        let mut lexer = Tokenizer::new(path_str, &contents);
+        let tokens = lexer.tokenize();
+        if tokens.tokens.is_empty() {
+            eprintln!("No token found");
+        } else {
+            println!("file_name: {}", tokens.file_name);
+            println!("Tokens:");
+            for token in &tokens.tokens {
+                println!("{:#}", token);
+            }
+            if tokens.tokens.len() > 100 {
+                println!("file_name: {}", tokens.file_name);
+            }
         }
+    } else {
+        eprintln!("Path is not valid UTF-8");
     }
+    Ok(())
 }
